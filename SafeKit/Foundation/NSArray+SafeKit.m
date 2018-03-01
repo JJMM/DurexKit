@@ -30,6 +30,13 @@
     return [self safe_objectAtIndex:index];
 }
 
+- (id)safe_objectAtIndexedSubscript:(NSUInteger)index {
+    if (index >= [self count]) {
+        return nil;
+    }
+    return [self safe_objectAtIndexedSubscript:index];
+}
+
 - (NSArray *)safe_arrayByAddingObject:(id)anObject {
     if (!anObject) {
         return self;
@@ -42,6 +49,7 @@
     dispatch_once(&onceToken, ^{
         [self safe_swizzleMethod:@selector(initWithObjects_safe:count:) tarClass:@"__NSPlaceholderArray" tarSel:@selector(initWithObjects:count:)];
         [self safe_swizzleMethod:@selector(safe_objectAtIndex:) tarClass:@"__NSArrayI" tarSel:@selector(objectAtIndex:)];
+        [self safe_swizzleMethod:@selector(safe_objectAtIndexedSubscript:) tarClass:@"__NSArrayI" tarSel:@selector(objectAtIndexedSubscript:)];
         [self safe_swizzleMethod:@selector(safe_arrayByAddingObject:) tarClass:@"__NSArrayI" tarSel:@selector(arrayByAddingObject:)];
     });
 }

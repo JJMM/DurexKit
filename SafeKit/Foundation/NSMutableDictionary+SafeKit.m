@@ -18,6 +18,17 @@
     [self safe_removeObjectForKey:aKey];
 }
 
+- (void)safe_setObject:(id)anObject forKeyedSubscript:(id <NSCopying>)aKey {
+    if (!anObject) {
+        return;
+    }
+    if (!aKey) {
+        return;
+    }
+    [self safe_setObject:anObject forKeyedSubscript:aKey];
+}
+
+
 - (void)safe_setObject:(id)anObject forKey:(id <NSCopying>)aKey {
     if (!anObject) {
         return;
@@ -33,6 +44,8 @@
     dispatch_once(&onceToken, ^{
         [self safe_swizzleMethod:@selector(safe_removeObjectForKey:) tarClass:@"__NSDictionaryM" tarSel:@selector(removeObjectForKey:)];
         [self safe_swizzleMethod:@selector(safe_setObject:forKey:) tarClass:@"__NSDictionaryM" tarSel:@selector(setObject:forKey:)];
+        [self safe_swizzleMethod:@selector(safe_setObject:forKeyedSubscript:) tarClass:@"__NSDictionaryM" tarSel:@selector(setObject:forKeyedSubscript:)];
+
     });
 }
 
